@@ -15,6 +15,6 @@ def cleaning(df:pd.DataFrame):
     df = df.rename(columns={df.columns[0]:'Category'})
     df = df.rename(columns={df.columns[1]:'Country'})
     df = df.rename(columns={df.columns[2]:'Year'})
-    df = df.rename(columns={df.columns[3]:'Percent'})
+    df = df.rename(columns={df.columns[3]:'Value'})
     return df
 # In current data 179 rows contain NaN type
