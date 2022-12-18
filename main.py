@@ -24,17 +24,20 @@ raw_df.drop(columns_to_drop, inplace=True, axis=1)
 df_in_millions = raw_df.iloc[:23040, :]
 df_in_percentages = raw_df.iloc[23040:, :]
 
-max_values = df_in_percentages.query("cofog99 != 'TOTAL'").groupby('TIME_PERIOD').max()
+max_index_in_mills = df_in_millions.query("geo != 'EU27_2020' and geo != 'EA19'").groupby('TIME_PERIOD')[
+    'OBS_VALUE'].idxmax()
+max_index_in_percentages = df_in_percentages.groupby('TIME_PERIOD')['OBS_VALUE'].idxmax()
 
-print(max_values)
+# Use the index to select the rows with the maximum value from the original DataFrame
 
+max_values_in_mills = df_in_millions.loc[max_index_in_mills]
+max_values_in_percentages = df_in_percentages.loc[max_index_in_percentages]
 
-for i in range(2012, 2020 + 1):
+# ??????????????????
+# max_values_in_mills.reset_index()
+# max_values_in_percentages.reset_index()
+#
+#
+print(max_values_in_percentages)
+print(max_values_in_mills)
 
-    max_value = max_values.loc[i, 'OBS_VALUE']
-    max_country = max_values.loc[i, 'geo']
-    max_category = max_values.loc[i, 'cofog99']
-
-    max_category = categories[max_category]
-    max_country = countries[max_country]
-    print(f' The highest GDP% expentage in {i} is {max_value}, in {max_category} category, by {max_country} country')

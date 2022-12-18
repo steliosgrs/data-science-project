@@ -87,5 +87,6 @@ categories ={
     "GF1006": "Housing",
     "GF1007": "Social exclusion n.e.c.",
     "GF1008": "R&D Social protection",
-    "GF1009": "Social protection n.e.c."
+    "GF1009": "Social protection n.e.c.",
+    'TOTAL': 'TOTAL'
 }
