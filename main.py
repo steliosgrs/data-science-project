@@ -1,4 +1,4 @@
-from dictionaries import *
+from dictionaries import rename_categories
 from data_cleaning import *
 from find_max_values_each_year import *
 
@@ -22,8 +22,17 @@ def main(raw_df):
     max_values_in_mills = return_max_values_by_indexes(df_in_millions, max_index_in_mills)
     max_values_in_percentages = return_max_values_by_indexes(df_in_percentages, max_index_in_percentages)
 
-    print(max_values_in_percentages)
+    # resetting indexes
+    
+    max_values_in_mills = max_values_in_mills.reset_index(drop=True)
+    max_values_in_percentages = max_values_in_percentages.reset_index(drop=True)
+
+    rename_categories(max_values_in_mills)
+    rename_categories(max_values_in_percentages)
+
+    print(max_values_in_percentages)  # temporary output
     print(max_values_in_mills)
+    return ''
 
 
 if __name__ == '__main__':
