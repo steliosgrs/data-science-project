@@ -1,4 +1,4 @@
-def rename_categories(df):
+def rename_headers(df):
 
     countries = {
         'BE': 'Belgium',
@@ -92,7 +92,7 @@ def rename_categories(df):
         'TOTAL': 'Total Sum'
     }
 
-    df['Expense Category'] = df['Expense Category'].apply(lambda x: categories[x])
+    df['Category'] = df['Category'].apply(lambda x: categories[x])
     df['Country'] = df['Country'].apply(lambda x: countries[x])
 
     return df

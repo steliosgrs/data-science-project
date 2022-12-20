@@ -11,10 +11,13 @@ def clean_data(data):
     ]
 
     # renaming headers
-    data.rename(columns={'cofog99': 'Expense Category', 'geo': 'Country', 'TIME_PERIOD': 'Year',
-                                'OBS_VALUE': 'Expense Amount'}, inplace=True)
+    data.rename(columns={'cofog99': 'Category', 'geo': 'Country', 'TIME_PERIOD': 'Year',
+                                'OBS_VALUE': 'Value'}, inplace=True)
 
-    data = data.drop(columns_to_drop, inplace=True, axis=1)
+    data.drop(columns_to_drop, inplace=True, axis=1)
+    data.drop(data[data['Country'] == 'EU27_2020'].index, inplace=True)
+    data.drop(data[data['Country'] == 'EA19'].index, inplace=True)
+
     return data
 
 

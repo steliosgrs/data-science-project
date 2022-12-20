@@ -2,19 +2,24 @@ import pandas as pd
 from dictionaries import *
 
 
-def find_max_index_in_mills(data):  # includes TOTAL
+def find_max_index(data, category):  # includes TOTAL
 
-    max_index_in_mills = data.query("Country != 'EU27_2020' and Country != 'EA19'").groupby('Year')[
-        'Expense Amount'].idxmax()
-
-    return max_index_in_mills
-
-
-def find_max_indexes_in_percs(data):
-    max_index_in_percentages = data.groupby('Year')['Expense Amount'].idxmax()
-
-    return max_index_in_percentages
+    #   returns the max index for each year
+    max_index = data.groupby('Year')['Value'].idxmax()
+    return max_index
 
 
 def return_max_values_by_indexes(data, indexes):
     return data.loc[indexes]
+
+
+def find_max(data, category):
+    if category == 'NOT TOTAL':
+        data = data[data['Category'] != 'TOTAL']
+    else:
+        data = data[data['Category'] == category]
+
+    max_index = find_max_index(data, category)
+    return return_max_values_by_indexes(data, max_index)
+
+
