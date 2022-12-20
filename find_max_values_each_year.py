@@ -2,7 +2,7 @@ import pandas as pd
 from dictionaries import *
 
 
-def find_max_index(data, category):  # includes TOTAL
+def find_max_index(data, category):
 
     #   returns the max index for each year
     max_index = data.groupby('Year')['Value'].idxmax()

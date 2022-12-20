@@ -14,7 +14,7 @@ def main(raw_df):
     df_in_millions = split_df_into_mills_and_percs(raw_df)[0]
     df_in_percentages = split_df_into_mills_and_percs(raw_df)[1]
 
-    #   task 1, put NOT TOTAL in 2nd arg to get all categories but total
+    #   task 1, put 'NOT TOTAL' in 2nd arg to get all categories but total
     max_values_in_mills = find_max(df_in_millions, 'NOT TOTAL')
     max_values_in_percentages = find_max(df_in_percentages, 'NOT TOTAL')
 
