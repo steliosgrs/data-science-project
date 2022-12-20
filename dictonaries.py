@@ -32,6 +32,7 @@ countries = {
 }
 
 categories ={
+    "TOTAL": "Total",
     "GF01": "General public services",
     "GF0101": "Executive and legislative organs, financial and fiscal affairs, external affairs",
     "GF0102": "Foreign economic aid",
