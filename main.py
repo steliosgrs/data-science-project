@@ -1,30 +1,31 @@
-from dictionaries import rename_headers
+from dictionaries import rename_countries_and_cats
 from data_cleaning import *
-from find_max_values_each_year import *
+from analysis import *
 
-raw_df = pd.read_csv(
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\gov_10a_exp__custom_4083116_linear.csv"
+raw_df_in_millions = pd.read_csv(
+    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_in_millions.csv"
+)
+raw_df_in_percentages = pd.read_csv(
+    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_in_percentages.csv"
 )
 
 
-def main(raw_df):
-    clean_data(raw_df)
-
-    #   splitting dataset in two, !!!! to fix
-    df_in_millions = split_df_into_mills_and_percs(raw_df)[0]
-    df_in_percentages = split_df_into_mills_and_percs(raw_df)[1]
+def main(df):
+    clean_data(df)
+    # resetting indexes after dropping rows
+    df = df.reset_index(drop=True)
 
     #   task 1, put 'NOT TOTAL' in 2nd arg to get all categories but total
-    max_values_in_mills = find_max(df_in_millions, 'NOT TOTAL')
-    max_values_in_percentages = find_max(df_in_percentages, 'NOT TOTAL')
+    max_values = find_max(df, 'TOTAL')
 
     # resetting indexes, renaming headers
-    dfs = [x.reset_index(drop=True) for x in [max_values_in_percentages, max_values_in_mills]]
-    dfs = [rename_headers(x) for x in dfs]
 
-    print(dfs[0], '''\n\n''', dfs[1])
+    df = max_values.reset_index(drop=True)
+    df = rename_countries_and_cats(df)
+    print(df)
     return ''
 
 
 if __name__ == '__main__':
-    main(raw_df)
+    main(raw_df_in_millions)
+    main(raw_df_in_percentages)
