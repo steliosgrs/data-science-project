@@ -1,2 +1,5 @@
 venv
 __pycache__
+countries_perGDP_80_2012_2020.csv
+countries_millions_80_2012_2020.csv
+commands.ipynb
