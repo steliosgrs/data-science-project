@@ -3,7 +3,7 @@ from dictionaries import countries
 import copy
 
 
-def clean_data(data):
+def clean_data(data: pd.DataFrame, ignore_negatives_and_zeros=False, ignore_eu=True) -> pd.DataFrame:
     columns_to_drop = ['DATAFLOW', 'LAST UPDATE', 'freq', 'na_item', 'unit', 'sector', 'OBS_FLAG']
 
     # renaming headers
@@ -16,8 +16,13 @@ def clean_data(data):
         del columns_to_drop[5]
         data.drop(columns_to_drop, inplace=True, axis=1)
 
-    data.drop(data[data['Country'] == 'EU27_2020'].index, inplace=True)
+    #   ignoring negative values and EU medians (EU27 category) based on parameter.
+    if ignore_negatives_and_zeros:
+        data = data[data['Value'] > 0]
+    if ignore_eu:
+        data.drop(data[data['Country'] == 'EU27_2020'].index, inplace=True)
     data.drop(data[data['Country'] == 'EA19'].index, inplace=True)
+    data = data.dropna(subset=['Value'])
     data = data.reset_index(drop=True)
 
     return data
@@ -35,20 +40,24 @@ def gdp_finder(country, year: int, csv) -> float:
 #   parameters: a csv with millions for each category, each country's GDP
 #   returns new dataframe with more accurate percentages dividing first gdp value with GDP.
 
-def percentage(old_v, new_v):
-    return (old_v / new_v) * 100
+def percentage(numerator, denominator) -> float:   # turning 2 values into a fraction
+    return (numerator / denominator) * 100
 
 
-def convert_percentages_to_true_decimals(df_to_be_converted, conversion_based_df):
+def convert_percentages_to_true_decimals(df_to_be_converted: pd.DataFrame, conversion_based_df: pd.DataFrame)\
+        -> pd.DataFrame:
+
+    # df to be converted and conversion based df should be cleaned first using clean_data function.
+
     new_df_category = df_to_be_converted['Category']
     new_df_country = df_to_be_converted['Country']
     new_df_year = df_to_be_converted['Year']
     new_df_value = []
 
     for index, row in df_to_be_converted.iterrows():
-        oldv = row[3]
-        total_v = gdp_finder(row[1], row[2], conversion_based_df)
-        new_df_value.append(percentage(oldv, total_v))
+        old_value = row[3]
+        total_value = gdp_finder(row[1], row[2], conversion_based_df)
+        new_df_value.append(percentage(old_value, total_value))
 
     new_df = pd.DataFrame({'Category': new_df_category,
                            'Country': new_df_country,
