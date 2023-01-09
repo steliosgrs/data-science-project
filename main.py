@@ -6,13 +6,13 @@ from dictionaries import rename_countries_and_cats, categories
 
 #   opening ang cleaning data
 df_in_millions = pd.read_csv(
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_in_millions.csv")  # NOQA
+    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\csv_in_millions.csv")  # NOQA
 countries_and_gdps = pd.read_csv(
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\countries_and_GDPs.csv")  # NOQA
+    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\countries_and_GDPs.csv")  # NOQA
 df_in_percentages = pd.read_csv(  # already cleaned
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_in_stronger_percentages.csv")  # NOQA
+    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\csv_in_stronger_percentages.csv")  # NOQA
 total_eu_27_gdps = pd.read_csv(  # already cleaned
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\eu_totals_2012_2020.csv")  # NOQA
+    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\eu_totals_2012_2020.csv")  # NOQA
 
 #   cleaning data and renaming categories and countries
 #   ex.  DE -> Germany ... GF01 -> General public services etc.
@@ -34,13 +34,15 @@ def task_1(df: pd.DataFrame):
 
 
 def task_2(df: pd.DataFrame):
-    task_2_part_1 = find_min_in_all_categories(df)
+    task_2_part_1 = find_min_average_in_all_categories(df)
     task_2_part_1_output = task_2_part_1['Category'] + f" has the lowest average founding at" \
-                                                       f" {round(task_2_part_1['Mean'], 3)}%. "
+                                                       f" {round(task_2_part_1['Mean'], 4)}%. "
 
     task_2_part_2_3_cat_input = task_2_part_1['Category']
-    task_2_part_2_3_output = find_max_average_in_category(df, task_2_part_2_3_cat_input)
+    task_2_part_2_3_output = find_min_max_average_in_category(df, task_2_part_2_3_cat_input)
     return task_2_part_1_output, task_2_part_2_3_output
+    #################
+############ CHECK 0.0 VALUES AND IGNORE THEM !!!!!!!!!!!
 
 
 if __name__ == '__main__':

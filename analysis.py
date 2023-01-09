@@ -29,7 +29,11 @@ def min_finder(country: str, year: int, dataset: pd.DataFrame, n_smallest: int) 
     return output
 
 
-def find_min_in_all_categories(df: pd.DataFrame):
+def find_min_average_in_all_categories(df: pd.DataFrame):
+    """
+    :param df
+    :return: category with the smallest average on all cats, 2012-2020.
+    """
     new_df_categories = []
     new_df_values = []
 
@@ -46,12 +50,13 @@ def find_min_in_all_categories(df: pd.DataFrame):
     return output.loc[output['Mean'].idxmin()]
 
 
-def find_max_average_in_category(df: pd.DataFrame, category: str) -> dict \
+def find_min_max_average_in_category(df: pd.DataFrame, category: str) -> dict \
         :
-    """
-    returns dictionary in form:
-    {'max_country: 99.0, min_country: 0.0001}
 
+    """
+    :param df
+    :param category
+    :return: dictionary in form: {'max_country: 99.0, min_country: 0.0001}
     """
     temp_df = df[df['Category'] == category]
 
