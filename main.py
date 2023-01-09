@@ -23,7 +23,7 @@ for i in datasets:
 
 
 def task_1(df: pd.DataFrame):
-    #   task 1, put 'NOT TOTAL' in 2nd arg to get all categories but total
+    # write 'NOT TOTAL' in 2nd arg to get all categories but total
     max_values = find_max(df, 'NOT TOTAL')
 
     # resetting indexes
@@ -34,7 +34,13 @@ def task_1(df: pd.DataFrame):
 
 
 def task_2(df: pd.DataFrame):
-    return find_average_in_each_category(df)
+    task_2_part_1 = find_min_in_all_categories(df)
+    task_2_part_1_output = task_2_part_1['Category'] + f" has the lowest average founding at" \
+                                                       f" {round(task_2_part_1['Mean'], 3)}%. "
+
+    task_2_part_2_3_cat_input = task_2_part_1['Category']
+    task_2_part_2_3_output = find_max_average_in_category(df, task_2_part_2_3_cat_input)
+    return task_2_part_1_output, task_2_part_2_3_output
 
 
 if __name__ == '__main__':

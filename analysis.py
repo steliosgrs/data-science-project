@@ -29,7 +29,7 @@ def min_finder(country: str, year: int, dataset: pd.DataFrame, n_smallest: int) 
     return output
 
 
-def find_average_in_each_category(df: pd.DataFrame):
+def find_min_in_all_categories(df: pd.DataFrame):
     new_df_categories = []
     new_df_values = []
 
@@ -46,4 +46,30 @@ def find_average_in_each_category(df: pd.DataFrame):
     return output.loc[output['Mean'].idxmin()]
 
 
+def find_max_average_in_category(df: pd.DataFrame, category: str) -> dict \
+        :
+    """
+    returns dictionary in form:
+    {'max_country: 99.0, min_country: 0.0001}
 
+    """
+    temp_df = df[df['Category'] == category]
+
+    # max finding
+    maximum_value = -69
+    maximum_country = ''
+    # min finding
+    minimum_value = 100
+    minimum_country = ''
+    for key in countries:
+        temp_country_df = temp_df[temp_df['Country'] == countries[key]]
+        temp_country_average = temp_country_df['Value'].mean()
+
+        if temp_country_average > maximum_value:  # max finding
+            maximum_value = temp_country_average
+            maximum_country = countries[key]
+
+        if temp_country_average < minimum_value:  # min finding
+            minimum_value = temp_country_average
+            minimum_country = countries[key]
+    return {minimum_country: minimum_value, maximum_country: maximum_value}
