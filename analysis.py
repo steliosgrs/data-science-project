@@ -11,7 +11,7 @@ def find_max_index(data: pd.DataFrame) -> pd.DataFrame:
 #   finds maximum values in <parameter> category for each year 2012-2020
 def find_max(data: pd.DataFrame, category: str) -> pd.DataFrame:
     if category == 'NOT TOTAL':
-        data = data[data['Category'] != 'TOTAL']
+        data = data[data['Category'] != 'Total']
     else:
         data = data[data['Category'] == category]
 
@@ -19,8 +19,9 @@ def find_max(data: pd.DataFrame, category: str) -> pd.DataFrame:
     return data.loc[max_index]
 
 
-#   finds n_smallest elements of <country>, <year>.
-def min_finder(country: str, year: int, dataset: pd.DataFrame, n_smallest: int) -> pd.DataFrame:
+def find_n_min_in_country_and_year(country: str, year: int, dataset: pd.DataFrame, n_smallest: int) -> pd.DataFrame:
+
+    # finds n_smallest elements of <country>, <year>.
     data = dataset.loc[(dataset['Country'] == country) & (dataset['Year'] == year)]
     data2 = data.drop('Value', axis=1, inplace=False)
     output = pd.concat([data2, data], axis=1)

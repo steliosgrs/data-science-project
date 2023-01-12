@@ -3,20 +3,21 @@ from dictionaries import countries
 import copy
 
 
-def clean_data(data: pd.DataFrame, ignore_negatives_and_zeros=False, ignore_eu=True) -> pd.DataFrame:
+def clean_data(data: pd.DataFrame, ignore_negatives=False, ignore_zeros=False, ignore_eu=True) -> pd.DataFrame:
     """
     :param data: raw .csv file, source https://ec.europa.eu/eurostat/databrowser/view/
     GOV_10A_EXP__custom_4037043/default/table?lang=en
-    :param ignore_negatives_and_zeros: ignores negative numbers in 'OBS_VALUE' column.
+    :param ignore_negatives: ignores negative numbers in 'OBS_VALUE' column.
+    :param ignore_zeros: ignores 0 values in 'OBS_VALUE' column
     :param ignore_eu: ignores EU_27 country entries (EU27 totals)
     :return: pandas dataframe structured as:
 
-    Category  Country  Year     Value
-    0  General public services  Austria  2012  7.261159
-    1  General public services  Austria  2013  7.210486
-    2  General public services  Austria  2014  6.825444
-    3  General public services  Austria  2015  6.793782
-    4  General public services  Austria  2016  6.462216
+       Category                 Country  Year  Value
+    0  General public services  Austria  2012  7.2
+    1  General public services  Austria  2013  7.2
+    2  General public services  Austria  2014  6.8
+    3  General public services  Austria  2015  6.7
+    4  General public services  Austria  2016  6.4
     ....
     """
 
@@ -33,8 +34,10 @@ def clean_data(data: pd.DataFrame, ignore_negatives_and_zeros=False, ignore_eu=T
         data.drop(columns_to_drop, inplace=True, axis=1)
 
     #   ignoring negative values and EU medians (EU27 category) based on parameter.
-    if ignore_negatives_and_zeros:
-        data = data[data['Value'] > 0]
+    if ignore_negatives:
+        data = drop_negatives(data)
+    if ignore_zeros:
+        data = drop_zeros(data)
     if ignore_eu:
         data.drop(data[data['Country'] == 'EU27_2020'].index, inplace=True)
     data.drop(data[data['Country'] == 'EA19'].index, inplace=True)
@@ -44,10 +47,32 @@ def clean_data(data: pd.DataFrame, ignore_negatives_and_zeros=False, ignore_eu=T
     return data
 
 
+def drop_negatives(df: pd.DataFrame):
+    return df[df['Value'] >= 0]
+
+
+def drop_zeros(df: pd.DataFrame):
+    return df[df['Value'] > 0]
+
+
+def drop_total_categories(df: pd.DataFrame):
+    """
+
+    :param df:
+    :return: dataframe without rows that have category equal to categories in list. These categories are the sum
+    of other sub-categories.
+    """
+    total_categories_to_be_dropped = ['General public services', 'Defence', 'Public order and safety',
+                                      'Economic affairs', 'Environmental protection', 'Housing and community amenities',
+                                      'Health', 'Recreation, culture and religion', 'Education', 'Social protection']
+    for category in total_categories_to_be_dropped:
+        df.drop(df[df['Category'] == category].index, inplace=True)
+    return df
+
+
 def gdp_finder(country, year: int, csv) -> float:
     """
     where csv is countries_and_GDPs.csv cleaned
-    ########################################
     """
     gdp_actual = copy.deepcopy(csv)
 
