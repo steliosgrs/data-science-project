@@ -21,7 +21,7 @@ def find_max(data: pd.DataFrame, category: str) -> pd.DataFrame:
 
 def find_n_min_in_country_and_year(country: str, year: int, dataset: pd.DataFrame, n_smallest: int) -> pd.DataFrame:
 
-    # finds n_smallest elements of <country>, <year>.
+    # finds n_smallest rows by value of <country>, <year>.
     data = dataset.loc[(dataset['Country'] == country) & (dataset['Year'] == year)]
     data2 = data.drop('Value', axis=1, inplace=False)
     output = pd.concat([data2, data], axis=1)
@@ -79,3 +79,22 @@ def find_min_max_average_in_category(df: pd.DataFrame, category: str) -> dict \
             minimum_value = temp_country_average
             minimum_country = countries[key]
     return {minimum_country: minimum_value, maximum_country: maximum_value}
+
+
+def find_average_value_for_each_year_and_category(df: pd.DataFrame) -> dict:
+    """
+    :param df: cleaned dataframe
+    :return: dictionary with average value in each category and each year:
+        {
+    'Total 2012': 200424.36,
+    'Total 2013': 202287.6033333333,
+      ...}
+    """
+    dic = {}
+    for key in categories:
+        temp_category_df = df[df['Category'] == categories[key]]
+        for year in range(2012, 2021):
+            temp_category_and_year_df = temp_category_df[temp_category_df['Year'] == year]
+            dic[f'{categories[key]} {year}'] = temp_category_and_year_df['Value'].mean()
+
+    return dic

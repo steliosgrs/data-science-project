@@ -91,10 +91,9 @@ def convert_percentages_to_true_decimals(df_to_be_converted: pd.DataFrame, conve
     """
     converting 1 decimal percentages from original CSV to more accurate percentages using GDP's CSV
 
-    :param df_to_be_converted: a csv with millions for each category
-    :param conversion_based_df: each country's GDP
+    :param df_to_be_converted: a csv with millions for each category (cleaned)
+    :param conversion_based_df: csv with each country's GDP (cleaned)
     :return: new dataframe with more accurate percentages dividing first gdp value with GDP.
-    df to be converted and conversion based df should be cleaned first using clean_data function.
     """
 
     new_df_category = df_to_be_converted['Category']

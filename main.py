@@ -2,6 +2,8 @@ from data_cleaning import *
 from analysis import *
 from dictionaries import rename_countries_and_cats, categories
 
+
+
 #   opening ang cleaning data from path
 df_in_millions = pd.read_csv(
     "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\csv_in_millions.csv")  # NOQA
@@ -19,13 +21,14 @@ for i in datasets:
     clean_data(i, ignore_negatives=False, ignore_zeros=False, ignore_eu=True)
     rename_countries_and_cats(i)
 
-df_in_percentages = drop_negatives(df_in_percentages)  # removing 0s and negatives from cleaned dataset
+
+# df_in_percentages = drop_negatives(df_in_percentages)  # removing 0s and negatives from cleaned dataset
 # with stronger percentages
 
 
 def task_1(df: pd.DataFrame):
-    # ignores total categories
-    df = drop_total_categories(df)
+    # ignore total categories ex. Social Protection
+    # df = drop_total_categories(df)
 
     # write 'NOT TOTAL' in 2nd arg to get all categories but total
     max_values = find_max(df, 'NOT TOTAL')
@@ -52,12 +55,45 @@ def task_2(df: pd.DataFrame):
     return task_2_part_1_output, task_2_part_2_3_output
 
 
-def task_3(df: pd.DataFrame):
-    pass
+def task_3(df: pd.DataFrame) -> dict:
+    del categories['TOTAL']  # we don't want Total category in results
+
+    delta_dic = {}  # Δ<category> = Category average of 2020 - Category average of 2012
+    dic = find_average_value_for_each_year_and_category(df)
+
+    for key in categories:  # appending 2020-2012 average difference in new dictionary
+        delta_dic[categories[key]] = dic[f'{categories[key]} {2020}'] - dic[f'{categories[key]} {2012}']
+
+    # default values to be compared
+    minimum: float = delta_dic[next(iter(delta_dic.items()))[0]]  # getting value of first dictionary pair to use
+    # as minimum.
+    maximum: float = delta_dic[next(iter(delta_dic.items()))[0]]  # similarly for maximum
+    least_change: float = abs(delta_dic[next(iter(delta_dic.items()))[0]])  # similarly, for least changed founding
+    # default strings to be replaced
+    min_category = next(iter(delta_dic.items()))[0]  # getting key of first dictionary pair to use as country with
+    # min and max category. we can't use empty string because if min or max category is the first pair, then we get
+    # empty string in return.
+    max_category = next(iter(delta_dic.items()))[0]
+    least_change_category = next(iter(delta_dic.items()))[0]
+
+    for key in delta_dic:  # finding min, max, closest to 0 in delta_dic
+        if delta_dic[key] > maximum:  # max finding
+            maximum = delta_dic[key]
+            max_category = key
+        if delta_dic[key] < minimum:  # min finding
+            minimum = delta_dic[key]
+            min_category = key
+        delta_dic[key] = abs(delta_dic[key])  # smallest change finding
+        if delta_dic[key] < least_change:
+            least_change = delta_dic[key]
+            least_change_category = key
+
+    return {min_category: minimum,  max_category: maximum, least_change_category: least_change}
 
 
 if __name__ == '__main__':
     #print(task_1(df_in_millions))
     #print(task_1(df_in_percentages))
+    #print(task_2(df_in_percentages))
 
-    print(task_2(df_in_percentages))
+    print(task_3(df_in_millions))
