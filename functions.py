@@ -83,4 +83,4 @@ def task2Answer1(datasetAcc):
 def task2Answer2(datasetAcc):
     dataset2 = datasetAcc.loc[datasetAcc['Category'] == 'R&D General public services', ['Value']]
     result2 = datasetAcc.loc[datasetAcc['Value'] == float(dataset2.max())]
-    print(result2)
+    return result2
