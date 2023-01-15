@@ -37,7 +37,7 @@ def clean_data(data: pd.DataFrame, ignore_negatives=False, ignore_zeros=False, i
     if ignore_negatives:
         data = drop_negatives(data)
     if ignore_zeros:
-        data = drop_zeros(data)
+        data.drop(data[data['Value'] == 0].index, inplace=True)
     if ignore_eu:
         data.drop(data[data['Country'] == 'EU27_2020'].index, inplace=True)
     data.drop(data[data['Country'] == 'EA19'].index, inplace=True)
@@ -48,11 +48,13 @@ def clean_data(data: pd.DataFrame, ignore_negatives=False, ignore_zeros=False, i
 
 
 def drop_negatives(df: pd.DataFrame):
-    return df[df['Value'] >= 0]
+    data = copy.deepcopy(df)
+    return data[data['Value'] >= 0]
 
 
 def drop_zeros(df: pd.DataFrame):
-    return df[df['Value'] > 0]
+    data = copy.deepcopy(df)
+    return data[data['Value'] > 0]
 
 
 def drop_total_categories(df: pd.DataFrame):
@@ -75,7 +77,6 @@ def gdp_finder(country, year: int, csv) -> float:
     where csv is countries_and_GDPs.csv cleaned
     """
     gdp_actual = copy.deepcopy(csv)
-
     # finding the requested GDP
     value = gdp_actual.loc[(gdp_actual["Country"] == country) & (gdp_actual["Year"] == year), ["Value"]]
     return value['Value'].item()

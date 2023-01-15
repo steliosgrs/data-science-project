@@ -2,20 +2,15 @@ import pandas as pd
 from dictionaries import countries, categories
 
 
-def find_max_index(data: pd.DataFrame) -> pd.DataFrame:
-    #   returns the max index for each year
-    max_index = data.groupby('Year')['Value'].idxmax()
-    return max_index
-
-
-#   finds maximum values in <parameter> category for each year 2012-2020
-def find_max(data: pd.DataFrame, category: str) -> pd.DataFrame:
+def find_max_values_in_category_in_each_year(data: pd.DataFrame, category: str) -> pd.DataFrame:
+    #   finds maximum values in <category> for each year 2012-2020
     if category == 'NOT TOTAL':
         data = data[data['Category'] != 'Total']
     else:
         data = data[data['Category'] == category]
 
-    max_index = find_max_index(data)
+    # max index for each year
+    max_index = data.groupby('Year')['Value'].idxmax()
     return data.loc[max_index]
 
 
@@ -30,28 +25,27 @@ def find_n_min_in_country_and_year(country: str, year: int, dataset: pd.DataFram
     return output
 
 
-def find_min_average_in_all_categories(df: pd.DataFrame):
+def find_min_sum_in_all_categories_all_years(df: pd.DataFrame):
     """
     :param df
-    :return: category with the smallest average on all cats, 2012-2020.
+    :return: category with the smallest sum on all cats, 2012-2020.
     """
     new_df_categories = []
     new_df_values = []
 
-    for key in categories:
+    for key in categories:  # creating new dataframe with 80 categories - rows
         new_df_categories.append(categories[key])
         temp_df = df[df['Category'] == categories[key]]
-        new_df_values.append(temp_df['Value'].mean())
+        new_df_values.append(temp_df['Value'].sum())
 
     output = pd.DataFrame({
         'Category': new_df_categories,
-        'Mean': new_df_values
+        'Sum of % GDP': new_df_values
     })
+    return output.loc[output['Sum of % GDP'].idxmin()]  # returns the minimum sum
 
-    return output.loc[output['Mean'].idxmin()]
 
-
-def find_min_max_average_in_category(df: pd.DataFrame, category: str) -> dict \
+def find_min_max_average_in_category_all_years(df: pd.DataFrame, category: str) -> dict \
         :
 
     """
