@@ -3,7 +3,17 @@ from dictionaries import countries, categories
 
 
 def find_max_values_in_category_in_each_year(data: pd.DataFrame, category: str) -> pd.DataFrame:
-    #   finds maximum values in <category> for each year 2012-2020
+    """
+
+    :param data: cleaned dataframe in millions or percentages
+    :param category: any category
+    :return: dataframe with 8 rows structured as:
+               Category  Country  Year  Value
+    0  Social protection  Denmark  2012  24.58
+    1  Social protection  Finland  2013  24.60
+                    ...
+    8  Social protection   France  2020  27.18
+    """
     if category == 'NOT TOTAL':
         data = data[data['Category'] != 'Total']
     else:
@@ -16,7 +26,20 @@ def find_max_values_in_category_in_each_year(data: pd.DataFrame, category: str) 
 
 def find_n_min_in_country_and_year(country: str, year: int, dataset: pd.DataFrame, n_smallest: int) -> pd.DataFrame:
 
-    # finds n_smallest rows by value of <country>, <year>.
+    """
+    :param country:
+    :param year:
+    :param dataset:
+    :param n_smallest: rows of new dataframe - n smallest expenses
+    :return:
+                                                Category  Country  ...  Year Value
+    0       Transfers of a general character between ...  Germany  ...  2013   0.0
+    1                                      Civil defence  Germany  ...  2013   0.0
+    2                        R&D Public order and safety  Germany  ...  2013  21.0
+    3                              R&D Social protection  Germany  ...  2013  70.0
+
+
+    """
     data = dataset.loc[(dataset['Country'] == country) & (dataset['Year'] == year)]
     data2 = data.drop('Value', axis=1, inplace=False)
     output = pd.concat([data2, data], axis=1)
@@ -25,10 +48,12 @@ def find_n_min_in_country_and_year(country: str, year: int, dataset: pd.DataFram
     return output
 
 
-def find_min_sum_in_all_categories_all_years(df: pd.DataFrame):
+def find_min_sum_in_all_categories_all_years(df: pd.DataFrame) -> pd.DataFrame:
     """
     :param df
-    :return: category with the smallest sum on all cats, 2012-2020.
+    :return: category with the smallest sum on all cats, 2012-2020. returns df with 1 row
+    Category           Social Protection
+    Sum of % GDP                   0.123
     """
     new_df_categories = []
     new_df_values = []

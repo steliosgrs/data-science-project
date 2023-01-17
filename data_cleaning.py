@@ -1,5 +1,4 @@
 import pandas as pd
-from dictionaries import countries
 import copy
 
 
@@ -35,7 +34,7 @@ def clean_data(data: pd.DataFrame, ignore_negatives=False, ignore_zeros=False, i
 
     #   ignoring negative values and EU medians (EU27 category) based on parameter.
     if ignore_negatives:
-        data = drop_negatives(data)
+        data.drop(data[data['Value'] < 0].index, inplace=True)
     if ignore_zeros:
         data.drop(data[data['Value'] == 0].index, inplace=True)
     if ignore_eu:
@@ -46,6 +45,9 @@ def clean_data(data: pd.DataFrame, ignore_negatives=False, ignore_zeros=False, i
 
     return data
 
+
+# creating drop_<> functions to be used on cleaned data, for example running task 2 with data without zeros
+# but running task 1 with zeros.
 
 def drop_negatives(df: pd.DataFrame):
     data = copy.deepcopy(df)
