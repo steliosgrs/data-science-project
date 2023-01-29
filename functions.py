@@ -52,3 +52,35 @@ def find_max(df:pd.DataFrame, Category='TOTAL'):
 
     return total_max_year
 
+def find_min(df:pd.DataFrame):
+    df = df.loc[df['Country'] == 'EU27_2020']
+    index_min = df['Value'].astype(float).idxmin(axis=0)
+    min = df.min()
+    return df.loc[index_min]
+
+# Finds max by category every year for every country
+def max_by_category(df:pd.DataFrame):
+    wout_total = df.loc[df['Category'] != 'TOTAL']
+    categories_max = pd.DataFrame()
+    country_keys = countries.keys()
+    years = df.Year.unique()
+
+    for year in range(years.__len__()):
+        df_year = wout_total.loc[wout_total['Year'] == years[year]]
+
+        for key in country_keys:
+            df_country = df_year.loc[df_year['Country'] == key]
+            max_idnex = df_country.Value.astype(int).idxmax(axis=0)
+            category_max = np.max(df_country.Value.values)
+            categoryCode = df_country.loc[max_idnex].Category
+            category  = categories[categoryCode]
+            row = {
+                "Country":countries[key],
+                "Category":category,
+                "Year":years[year],
+                "Value":category_max
+            }
+            row = pd.DataFrame(row,index=[0])
+            categories_max = pd.concat([categories_max, row],ignore_index=True)
+    return categories_max
+

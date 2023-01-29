@@ -3,3 +3,9 @@ __pycache__
 countries_perGDP_80_2012_2020.csv
 countries_millions_80_2012_2020.csv
 commands.ipynb
+GPD_output.csv
+onlyEurope.csv
+mil_GDP_TOTAL_31_12-20.csv
+MIL_coun31_12-20_cat80.csv
+GDP_coun31_12-20_cat80.csv
+new.csv

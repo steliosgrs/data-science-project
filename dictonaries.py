@@ -1,4 +1,5 @@
 countries = {
+    'EU27_2020': "European Union",
     'BE': 'Belgium',
     'BG': 'Bulgaria',
     'CZ': 'Czechia',
