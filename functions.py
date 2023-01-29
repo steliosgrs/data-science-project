@@ -85,14 +85,17 @@ def gdpAccurate(dataset):
     s2.to_csv('dfGDPAcc.csv', sep=',')
 
 def task2Answer1(datasetAcc):
-    temp1 = datasetAcc.groupby(['Category', 'Country']).agg({'Value': 'mean'})  # Grouping dataset by country and category, extracting the mean values of all years
-    result = temp1.loc[temp1['Value'] == float(temp1.loc[temp1['Value'] > 0].min())]
-    return (result.reset_index())
+    temp1 = datasetAcc.groupby(['Category'])['Value'].mean().reset_index()
+    result = (temp1.loc[temp1['Value'] > 0]).min()
+    result = result.reset_index()
+    print('The category with the lowest GDP expense is ' + str(result['Category'].item()) + '.')
+    print(result['Value'].item())
+    return result['Category'].item()
 
 def task2Answer2(datasetAcc):
-    dataset2 = datasetAcc.loc[datasetAcc['Category'] == 'R&D General public services', ['Value']]
+    dataset2 = datasetAcc.loc[datasetAcc['Category'] == 'General public services', ['Value']]
     result2 = datasetAcc.loc[datasetAcc['Value'] == float(dataset2.max())]
-    return result2
+    print('The country with the highest expense on this category spends ' + str(result2['Value'].item()) + ' of their GDP in this category')
 
 def task3(dataset):
     workDataset = dataset.loc[(dataset['Category'] != 'Total')]
