@@ -1,13 +1,14 @@
-from functions import task1percentage, task1Actual, task2Answer1, task2Answer2
+from functions import task1percentage, task1Actual, task2Answer1, task2Answer2, task3
 from dataLoadingAndCleaning import dfGDP, dfActual, dfGDPAcc
 if __name__ == '__main__':
-    for i in range(2012, 2021):
-        print(task1percentage(dfGDP, i))
-    for i in range(2012, 2021):
-        print(task1Actual(dfActual, i))
+    task1percentage(dfGDP, 2012, 2020)
+    print('\n')
+    task1Actual(dfActual, 2012, 2020)
 
-    print(task2Answer1(dfGDPAcc))
-    print(task2Answer2(dfGDPAcc))
+
+
+
+
 
 
 
