@@ -94,27 +94,22 @@ def gdpAccurate(dataset):
 
 
 # Answering task 2 part 1.
-def task2Answer1(datasetRealValues, DatasetGDPperYear):
-    pd.set_option('display.precision', 20)
-    tenYearGDP = DatasetGDPperYear.groupby(['Country'])['Value'].sum().reset_index()  # Calculating the 10year GDP
-    tenYearCategoryValue = datasetRealValues.groupby(['Category', 'Country'])[
-        'Value'].mean().reset_index()  # Calculating the ten year mean Value for each category and country
-    df = pd.merge(tenYearCategoryValue, tenYearGDP, on='Country')  # merging both dataframes on Country
-    df['Value_x'] = df['Value_x'] / df[
-        'Value_y']  # Two new columns are created, Value_x which holds the 10 year category value, and Value_y which
-    # holds the 10 year GDP. We divide the two values calculating the percentage, as requested.
-    df = df.drop(columns=['Value_y'])  # Dropping the unnecessary Value_y column
-    df = df.rename(columns={'Value_x': 'Value'})  # Renaming column Value_x to Value
-    dfResult = df  # Creating a new dataframe because df was singing "fuck you I won't do what you tell me"
-    result = dfResult.loc[dfResult['Value'] > 0].min()
+def task2Answer1(datasetGDPActual, DatasetGDPperYear):
+    pd.set_option('display.precision', 15)
+    dfworking = datasetGDPActual.groupby(['Category'])['Value'].sum().reset_index()
+    result = dfworking.loc[(dfworking['Value']).idxmin()]
+    tenYearGDP = DatasetGDPperYear['Value'].sum()  # Calculating the 10year GDP
+    tenYearCategoryValue = datasetGDPActual.groupby(['Category', 'Country'])[
+        'Value'].mean().reset_index()  # Calculating the ten year average value for each category and country
+    tenYearCategoryValue['Value'] = tenYearCategoryValue[
+                                        'Value'] / tenYearGDP  # CAlculating the percentage according to the 10 year EU GDP
+    output1 = tenYearCategoryValue.loc[(tenYearCategoryValue['Category'] == str(result['Category']))]  # Finding the category with the smallest expence on the calculated dataframe
+    lowest = output1.loc[output1['Value'].idxmin()]  # Finding the country who spends the least money on this category
+    highest = output1.loc[output1['Value'].idxmax()]  # finding the country that spends most money on this category
+
     print('The category with the lowest GDP expense is ' + str(result['Category']) + '.')
-    print('The country with the lowest expense spends ' + str(result['Value']) + ' of their GDP in this category')
-
-
-def task2Answer2(datasetAcc):
-    dataset2 = datasetAcc.loc[datasetAcc['Category'] == 'Transfers of a general character between different levels of government', ['Value']]
-    result2 = datasetAcc.loc[datasetAcc['Value'] == float(dataset2.max())]
-    print('The country with the highest expense on this category spends ' + str(result2['Value'].item()) + ' of their GDP.')
+    print('The country with the lowest expense spends ' + str(lowest['Value']) + ' of their GDP in this category')
+    print('The country with the highest expense spends ' + str(highest['Value']) + ' of their GDP in this category')
 
 
 # Task 3
@@ -132,9 +127,9 @@ def task3(dataset):
     mostStable = result.groupby('Category')['Value'].std().idxmin()
     visualisation = workDataset.groupby(['Category', 'Year'])['Value'].sum().reset_index()
     visualisation = visualisation.loc[visualisation['Category'] == 'Public debt transactions']
-    print(maxReduction)
-    print(maxIncreace)
-    print(mostStable)
+    print('The category with the biggest funding reduction is ' + str(maxReduction['Category']) + '.')
+    print('The category with the largest funding increase is ' + str(maxIncreace['Category']) + '.')
+    print('The most stable category in terms of funding is ' + str(mostStable) + '.')
     # Graphing
 
     x = visualisation['Year']
