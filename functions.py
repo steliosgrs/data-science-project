@@ -1,5 +1,7 @@
 import pandas as pd
 from tabulate import tabulate
+import matplotlib.pyplot as plt
+
 
 # Cleaning data by Steliosgrs
 def cleaning(df:pd.DataFrame):
@@ -20,6 +22,10 @@ def cleaning(df:pd.DataFrame):
     return df
 # In current data 179 rows contain NaN type
 
+def cleaningGDPActualValues(dataframe):
+    df = dataframe.drop(['DATAFLOW', 'LAST UPDATE', 'freq', 'unit', 'OBS_FLAG', 'na_item'], axis=1)
+    df.rename(columns={'geo': 'Country', 'TIME_PERIOD': 'Year', 'OBS_VALUE': 'Value'}, inplace=True)
+    return df
 
 # Answering task1 where the highest expense per year is calculated and after that we determine the category.
 
@@ -38,7 +44,7 @@ def task1percentage(dataset, year1, year2):
     print(tabulate(resultF, headers=['Year', 'Country', 'GDP percentage spent', 'Category', 'GDP percentage spent on Category ']))
 
 
-
+# Task 1 Answering part 2. Which country spends most of their GDP and in which category of COFOG
 def task1Actual(dataset, year1, year2):
     resultF = []
     for i in range(year1, (year2 + 1)):
@@ -53,7 +59,7 @@ def task1Actual(dataset, year1, year2):
     print(tabulate(resultF, headers=['Year', 'Country', 'Million Euros', 'Category', 'Million Euros']))
 
 
-
+# gdpFinder finds the actual gdp Value for a specific country and year, using the csv provided
 def gdpFinder(Country, Year):
     import pandas as pd
     from dictionaries import countries
@@ -76,6 +82,8 @@ def gdpFinder(Country, Year):
     value = (gdpActualPY.loc[(gdpActualPY['Country'] == str(Country)) & (gdpActualPY['Year'] == Year)])
     return (value['GDP in Million €'].item())
 
+# gdpAccurate calculates the GDP for all countries with more precision than the data provided by Eurostat and saves it
+# to the working directory. GdpFinder is utilised here. This should be used only once, due to the high cpu cost.
 def gdpAccurate(dataset):
     s2 = pd.Series(dtype='float64')
     for i in range(0, len(dataset)):
@@ -84,19 +92,32 @@ def gdpAccurate(dataset):
 
     s2.to_csv('dfGDPAcc.csv', sep=',')
 
-def task2Answer1(datasetAcc):
-    temp1 = datasetAcc.groupby(['Category'])['Value'].mean().reset_index()
-    result = (temp1.loc[temp1['Value'] > 0]).min()
-    result = result.reset_index()
-    print('The category with the lowest GDP expense is ' + str(result['Category'].item()) + '.')
-    print(result['Value'].item())
-    return result['Category'].item()
+
+# Answering task 2 part 1.
+def task2Answer1(datasetRealValues, DatasetGDPperYear):
+    pd.set_option('display.precision', 20)
+    tenYearGDP = DatasetGDPperYear.groupby(['Country'])['Value'].sum().reset_index()  # Calculating the 10year GDP
+    tenYearCategoryValue = datasetRealValues.groupby(['Category', 'Country'])[
+        'Value'].mean().reset_index()  # Calculating the ten year mean Value for each category and country
+    df = pd.merge(tenYearCategoryValue, tenYearGDP, on='Country')  # merging both dataframes on Country
+    df['Value_x'] = df['Value_x'] / df[
+        'Value_y']  # Two new columns are created, Value_x which holds the 10 year category value, and Value_y which
+    # holds the 10 year GDP. We divide the two values calculating the percentage, as requested.
+    df = df.drop(columns=['Value_y'])  # Dropping the unnecessary Value_y column
+    df = df.rename(columns={'Value_x': 'Value'})  # Renaming column Value_x to Value
+    dfResult = df  # Creating a new dataframe because df was singing "fuck you I won't do what you tell me"
+    result = dfResult.loc[dfResult['Value'] > 0].min()
+    print('The category with the lowest GDP expense is ' + str(result['Category']) + '.')
+    print('The country with the lowest expense spends ' + str(result['Value']) + ' of their GDP in this category')
+
 
 def task2Answer2(datasetAcc):
-    dataset2 = datasetAcc.loc[datasetAcc['Category'] == 'General public services', ['Value']]
+    dataset2 = datasetAcc.loc[datasetAcc['Category'] == 'Transfers of a general character between different levels of government', ['Value']]
     result2 = datasetAcc.loc[datasetAcc['Value'] == float(dataset2.max())]
-    print('The country with the highest expense on this category spends ' + str(result2['Value'].item()) + ' of their GDP in this category')
+    print('The country with the highest expense on this category spends ' + str(result2['Value'].item()) + ' of their GDP.')
 
+
+# Task 3
 def task3(dataset):
     workDataset = dataset.loc[(dataset['Category'] != 'Total')]
     workDataset = workDataset[workDataset['Country'].str.contains('Switzerland') == False]
@@ -106,8 +127,25 @@ def task3(dataset):
     maxReduction = result.loc[result['diff'].idxmin(), ['Category', 'diff']]
 
     maxIncreace = result.loc[result['diff'].idxmax(), ['Category', 'diff']]
-
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
     mostStable = result.groupby('Category')['Value'].std().idxmin()
+    visualisation = workDataset.groupby(['Category', 'Year'])['Value'].sum().reset_index()
+    visualisation = visualisation.loc[visualisation['Category'] == 'Public debt transactions']
+    print(maxReduction)
+    print(maxIncreace)
+    print(mostStable)
+    # Graphing
+
+    x = visualisation['Year']
+    y = visualisation['Value']
+    plt.plot(x, y, marker = '<')
+    plt.ylabel('Million Euros')
+    plt.xlabel('Year')
+    plt.title('Reduction of funding in Public debt transactions ')
+    plt.show()
+
+
 
 
     return maxReduction, maxIncreace, mostStable
