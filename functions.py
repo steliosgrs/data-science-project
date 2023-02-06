@@ -8,7 +8,7 @@ def which_category(df,Category):
     if Category == 'TOTAL':
         # total_values = df.loc[df['Category'] == Category]
         total_values = df.loc[df['Category'] == 'TOTAL']
-    elif Category == 'all':
+    elif Category == 'All':
         total_values = df.loc[df['Category'] != 'TOTAL']
     else:
         total_values = df.loc[df['Category'] == Category]
@@ -16,8 +16,18 @@ def which_category(df,Category):
 
 # Finding the max entries for every year
 def find_max(df:pd.DataFrame, Category='TOTAL'):
+    total_values = which_category(df,Category)
+    maxs = total_values.groupby('Year')['Value'].idxmax()
+    df.replace(to_replace=list(categories.keys()), value=list(categories.values()), inplace=True)
+    df.replace(to_replace=list(countries.keys()), value=list(countries.values()), inplace=True)
+    df.drop('Category', axis=1,inplace=True)
+
+    return df.loc[maxs]
+    """
+def find_max(df:pd.DataFrame, Category='TOTAL'):
     total_max_year = pd.DataFrame()
     total_values = which_category(df,Category)
+    total_values.groupby('Year')['Value'].idxmax()
 
     # Take the year range of the dataset 
     # eg. if 2012-2020 years = [2012, 2013, ... 2019, 2020]
@@ -38,11 +48,18 @@ def find_max(df:pd.DataFrame, Category='TOTAL'):
         categoryCode = total_values.loc[max_idnex].Category
         category  = categories[categoryCode]
 
-        # Create new row
+        # if category != 'Total':
+        #     # Create new row
+        #     row = {
+        #         "Country":country,
+        #         "Year":years[year],
+        #         "Category":category,
+        #         "Value":total_max,
+        #         }
+        # else:
         row = {
             "Country":country,
             "Year":years[year],
-            "Category":category,
             "Value":total_max,
             }
         row = pd.DataFrame(row,index=[0])
@@ -51,8 +68,9 @@ def find_max(df:pd.DataFrame, Category='TOTAL'):
         total_max_year = pd.concat([total_max_year, row],ignore_index=True)
 
     return total_max_year
+"""
 
-def find_min(df:pd.DataFrame):
+def find_min_inEU(df:pd.DataFrame):
     df = df.loc[df['Country'] == 'EU27_2020']
     index_min = df['Value'].astype(float).idxmin(axis=0)
     min = df.min()
