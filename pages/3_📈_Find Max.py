@@ -8,7 +8,7 @@ percents = pd.read_csv('GDP_coun31_12-20_cat80.csv')
 TotalGDP = pd.read_csv('mil_GDP_TOTAL_31_12-20.csv')
 df_percs = cleaning(percents)
 df_money = cleaning(millions)
-
+e = NameError('Please upload a file from sidebar')
 st.title("Find Max")
 
 with st.sidebar:
