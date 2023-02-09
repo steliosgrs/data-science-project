@@ -24,7 +24,7 @@ df_money = cleaning(millions)
 e = NameError('Please upload a file from sidebar')
 # print(req.text)
 st.set_page_config(
-    page_title="Data Analysis",
+    page_title="Home Page",
     page_icon="🧊",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -34,8 +34,10 @@ st.set_page_config(
         'About': "# This is a header. This is an *extremely* cool app!"
     }
 )
-activiteis= ['Home','Find max', 'Find min']
-choice = st.sidebar.selectbox("Menu", activiteis)
+
+st.write("TODO: Add Documentation")
+# activiteis= ['Home','Find max', 'Find min']
+# choice = st.sidebar.selectbox("Menu", activiteis)
 
 # hide_st_style = """
 #   <style>
@@ -45,46 +47,29 @@ choice = st.sidebar.selectbox("Menu", activiteis)
 # """
 # st.markdown(hide_st_style, unsafe_allow_html=True)
 
-if choice == 'Home':
-	st.header('Data Analysis Project')
+# if choice == 'Home':
+# 	st.header('Data Analysis Project')
 
-elif choice == 'Find max':
-	st.title('Task 1')
+# elif choice == 'Find max':
+# 	st.title('Task 1')
 
-	with st.sidebar:
-		cateFullDecs = list(categories.values())
-		dataset = st.sidebar.selectbox("Select Dataset",['Percentage', 'Millions', 'My Dataset'])
-		if dataset == 'My Dataset':
-			file = st.sidebar.file_uploader("Choose a CSV file",type=['csv'] )
-			if file is not None:
-				dataframe = pd.read_csv(file)
-				dataframe = cleaning(dataframe)				
+# 	with st.sidebar:
+# 		cateFullDecs = list(categories.values())
+# 		dataset = st.sidebar.selectbox("Select Dataset",['Percentage', 'Millions', 'My Dataset'])
+# 		if dataset == 'My Dataset':
+# 			file = st.sidebar.file_uploader("Choose a CSV file",type=['csv'] )
+# 			if file is not None:
+# 				dataframe = pd.read_csv(file)
+# 				dataframe = cleaning(dataframe)				
 
-		elif dataset == 'Percentage':
-			dataframe = df_percs
+# 		elif dataset == 'Percentage':
+# 			dataframe = df_percs
 
-		elif dataset == 'Millions':
-			dataframe = df_money
+# 		elif dataset == 'Millions':
+# 			dataframe = df_money
 
-		categoryChoice = st.sidebar.selectbox("Categories",cateFullDecs)
+# 		categoryChoice = st.sidebar.selectbox("Categories",cateFullDecs)
 
-	col1, col2 = st.columns(2,gap='large')
+	
 
-	with col1:
-		categoryCode =list(categories.keys())[list(categories.values()).index(categoryChoice)]
-		st.header("Find Max")
-		
-		try:
-			maxdf=find_max(dataframe,Category=categoryCode)
-			maxdf.set_index('Country',inplace=True)
-			st.bar_chart(maxdf,x='Year',y='Value')
-		except:
-			st.exception(e)
-	with col2:
-		st.subheader(f"{categoryChoice}")
-		# st.checkbox("Use container width", value=True, key="use_container_width")
-		try:
-			st.dataframe(maxdf,use_container_width=True)
-		except:
-			pass
 	
