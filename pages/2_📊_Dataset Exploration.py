@@ -1,11 +1,14 @@
 import streamlit as st
 import pandas as pd
 from streamlit_extras.dataframe_explorer import dataframe_explorer
-from dictonaries import categories
-from clean import cleaning
-millions = pd.read_csv('MIL_coun31_12-20_cat80.csv')
-percents = pd.read_csv('GDP_coun31_12-20_cat80.csv')
-TotalGDP = pd.read_csv('mil_GDP_TOTAL_31_12-20.csv')
+from tools.dictonaries import categories
+from tools.clean import cleaning
+
+percents = pd.read_csv('datasets\GDP_coun31_12-20_cat80.csv')
+millions = pd.read_csv('datasets\MIL_coun31_12-20_cat80.csv')
+TotalGDP = pd.read_csv('datasets\mil_GDP_TOTAL_31_12-20.csv')
+
+
 df_percs = cleaning(percents)
 df_money = cleaning(millions)
 
