@@ -1,4 +1,5 @@
-import datetime
+import plotly.graph_objects as go
+import plotly.io as pio
 from sjvisualizer import PieRace
 from sjvisualizer import DataHandler
 from sjvisualizer import Canvas, BarRace
@@ -6,6 +7,7 @@ import pandas as pd
 from data_cleaning import clean_data
 from dictionaries import rename_countries_and_cats
 import os
+import plotly.express as px
 
 df_in_millions = pd.read_csv(
     r"C:\Users\kalot\GitHub\data-science-project\csv_files\csv_in_millions.csv")  # NOQA
@@ -109,3 +111,47 @@ def show_bar_category_race_throughout_years_of_country(country, df: pd.DataFrame
 
 # print(get_country_dataframe(df_in_percentages, 'Greece'))
 # print(show_bar_category_race_throughout_years_of_country('Austria', df_in_millions))
+
+def get_country_and_year_dataframe(df:pd.DataFrame, country:str, year:int):
+    df = get_country_dataframe(df, country)
+    years_and_df_rows = {
+        '2012': 0,
+        '2013': 1,
+        '2014': 2,
+        '2015': 3,
+        '2016': 4,
+        '2017': 5,
+        '2018': 6,
+        '2019': 7,
+        '2020': 8,
+
+    }
+    df = df.drop('Date', axis=1)
+    return df.iloc[years_and_df_rows[str(year)]]
+
+
+def create_treemap(df, country, year, perc: bool, PATH):
+
+    series = get_country_and_year_dataframe(df, country, year)
+    series = pd.DataFrame({'Category': series.index, 'Value': series.values})
+    print(series.head())
+    series = series[series['Value'] != 0]
+
+    fig = px.treemap(data_frame=series, path=['Category'], values='Value',
+                     color='Value',
+                     color_continuous_scale='Magma',
+                     hover_data={'Value': ':.2f'},
+                     labels={'Value': 'Expense'},
+                     title=f'Expense Treemap of {country} in {year}')
+    if perc:
+        fig.update_traces(hovertemplate='<b>%{label}</b><br>Percentage: %{value:.2f}')
+    else:   # millions dataframe
+        fig.update_traces(hovertemplate='<b>%{label}</b><br>Millions spent: %{value:.2f}')
+    fig.update_layout(
+        margin=dict(t=50, l=50, r=50, b=50),
+        font=dict(size=18),
+        coloraxis_showscale=False)
+    fig.write_html(PATH)
+    fig.show()
+    
+print(create_treemap(df_in_percentages, 'Germany', 2013, perc=True, PATH='urpath'))
