@@ -5,13 +5,13 @@ from dictionaries import rename_countries_and_cats, categories
 
 #   opening ang cleaning data from path
 df_in_millions = pd.read_csv(
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\csv_in_millions.csv")  # NOQA
+    r"C:\Users\kalot\GitHub\data-science-project\csv_files\csv_in_millions.csv")  # NOQA
 countries_and_gdps = pd.read_csv(
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\countries_and_GDPs.csv")  # NOQA
+    r"C:\Users\kalot\GitHub\data-science-project\csv_files\countries_and_GDPs.csv")  # NOQA
 df_in_percentages = pd.read_csv(  # already cleaned
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\csv_in_stronger_percentages.csv")  # NOQA
+    r"C:\Users\kalot\GitHub\data-science-project\csv_files\csv_in_stronger_percentages.csv")  # NOQA
 total_eu_27_gdps = pd.read_csv(  # already cleaned
-    "D:\pycharmBackUp\eurostat_data_analysis_git\data-science-project\csv_files\eu_totals_2012_2020.csv")  # NOQA
+    r"C:\Users\kalot\GitHub\data-science-project\csv_files\eu_totals_2012_2020.csv")  # NOQA
 
 #   cleaning data and renaming categories and countries
 #   ex.  DE -> Germany ... GF01 -> General public services etc.
@@ -79,5 +79,5 @@ if __name__ == '__main__':
 
     #print(task_2(df_in_percentages))
 
-    print(task_3(df_in_percentages))
-
+    #print(task_3(df_in_percentages))
+    print(df_in_millions)
